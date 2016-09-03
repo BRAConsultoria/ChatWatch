@@ -1,9 +1,9 @@
 <?php
 
 namespace ChatWatch;
-
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use ChatWatch\Config;
 
 class EntityMaster
 {
@@ -12,19 +12,24 @@ class EntityMaster
     * @var Doctrine\ORM\EntityManagerInterface EntityManager
     */
     private $entityManager;
+    
+    /**
+    * @var array conf database credentials
+    */
+    private $conf;
 
     public function __construct() 
     {
-        
+        $this->conf = (new Config())->getConf('db');
         $paths = array(__DIR__ . "/Domain/Entity/");
         $isDevMode = true;
 
         // the connection configuration
         $dbParams = [
-            'driver'    => 'pdo_mysql',
-            'user'      => 'root',
-            'password'  => '',
-            'dbname'    => 'chat_watch',
+            'driver'    => $this->conf['driver'],
+            'user'      => $this->conf['user'],
+            'password'  => $this->conf['password'],
+            'dbname'    => $this->conf['dbname'],
         ];
 
         $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
