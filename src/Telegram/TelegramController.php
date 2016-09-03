@@ -1,5 +1,6 @@
 <?php
 namespace App\Telegram;
+use ChatWatch\Config;
 
 class TelegramController implements \App\Core\ControllerInterface
 {
@@ -8,6 +9,11 @@ class TelegramController implements \App\Core\ControllerInterface
      */
     private $controller;
 
+    /**
+    * @var array conf bot information
+    */
+    private $conf;
+    
     protected $requestParams = [];
  
     private $class;
@@ -15,6 +21,7 @@ class TelegramController implements \App\Core\ControllerInterface
     public function __construct() 
     {
         $this->class = new TelegramClass();
+        $this->conf = (new Config())->getConf('telegram');
     }
     
     public function main()
@@ -41,13 +48,18 @@ class TelegramController implements \App\Core\ControllerInterface
 
     public function setNewUpdates()
     {
-        $a = '{"update_id":536948559,"message":{"message_id":475,"from":{"id":159867452,"first_name":"Rinzler"},"chat":{"id":159867452,"first_name":"Rinzler","type":"private"},"date":1472859360,"text":"TESTE"}}';
-        //$payload = \json_decode(\file_get_contents('php://input'), true);
-        $payload = \json_decode($a, true);//TEST
-        if($this->class->setParams($this->getRequestParams())->setNewUpdates($payload) === true) {
-            return ($this->controller->jsonSucess("Message saved."));
+        $params = $this->requestParams;
+        if(isset($params['btk']) and $params['btk'] === $this->conf['botToken']){
+            $a = '{"update_id":536948559,"message":{"message_id":475,"from":{"id":159867452,"first_name":"Rinzler"},"chat":{"id":159867452,"first_name":"Rinzler","type":"private"},"date":1472859360,"text":"TESTE"}}';
+            //$payload = \json_decode(\file_get_contents('php://input'), true);
+            $payload = \json_decode($a, true);//TEST
+            if($this->class->setParams($this->getRequestParams())->setNewUpdates($payload) === true) {
+                return ($this->controller->jsonSucess("Message saved."));
+            } else {
+                return ($this->controller->jsonError("Error"));
+            }
         } else {
-            return ($this->controller->jsonError("Error"));
+            return ($this->controller->jsonError("401 - Unauthorized"));
         }
     }
 }

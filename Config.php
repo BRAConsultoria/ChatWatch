@@ -21,6 +21,10 @@ class Config
                 'user'      => 'root',
                 'password'  => '',
                 'dbname'    => 'chat_watch',
+            ],
+            'telegram' => [
+                'botToken'  => 'bot<your-bot-token>',
+                'botName'   => '<your-bot-name>',
             ]
         ];
         return $conf;
