@@ -1,0 +1,28 @@
+{
+    "name": "rinzler/chat-watch",
+    "description": "Stand-alone app that capture and store messages on a Telegram chat",
+    "type": "library",
+    "require": {
+        "propel/propel": "~2.0@dev",
+        "doctrine/orm": "^2.5",
+        "symfony/console": "*",
+        "symfony/yaml": "*"
+    },
+    "license": "GPL",
+    "authors": [
+        {
+            "name": "Rinzler",
+            "email": "feliphezion@gmail.com"
+        }
+    ],
+    "minimum-stability": "beta",
+    "autoload": {
+       "psr-4": {
+            "ChatWatch\\": "",
+            "App\\": "src/",
+            "ChatWatch\\Entity\\": "Domain/Entity/",
+			"Entities\\": "Domain/Entity/"
+        }
+    }
+
+}
