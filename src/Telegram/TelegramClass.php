@@ -21,8 +21,13 @@ class TelegramClass
         $message    = $payload['message'];
         $user       = $message['from'];
         $chat       = $message['chat'];
-        
+
         if($this->isChatIgnored($chat['id']) === false) {
+
+            if(isset($chat['text']) === false){
+                $this->setError("Only text messages are awllowed to be stored.");
+                return false;
+            }
 
             $this->entityManager->beginTransaction();
 

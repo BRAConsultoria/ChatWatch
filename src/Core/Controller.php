@@ -60,6 +60,7 @@ class Controller {
             if(\LOG_FILE === true and $this->log->getLogAvailable() === true){
                 $this->log->logWrite([
                     'params'    => $this->params,
+                    'payload'   => \json_decode(\file_get_contents('php://input'), true),
                     'msg'       => $e->getMessage(),
                     'trace'     => $e->getTraceAsString(),
                 ]);
