@@ -1,6 +1,7 @@
 <?php
 namespace Entities;
-/** @Entity 
+/** 
+* @Entity(repositoryClass="Repositories\ChatRepository")
 * @Table(name="chat",indexes={@Index(name="chatId", columns={"chatId"})})
 */
 class Chat
@@ -20,6 +21,9 @@ class Chat
 
     /** @Column(type="string", length=10) */
     private $type;
+
+    /** @Column(type="boolean", nullable=TRUE, options={"default": FALSE}) */
+    private $ignored;
 
     /**
      * Get id
@@ -101,5 +105,29 @@ class Chat
     public function getType()
     {
         return $this->type;
+    }
+    
+    /**
+     * Set ignored
+     *
+     * @param boolean $ignored
+     *
+     * @return Chat
+     */
+    public function setIgnored($ignored)
+    {
+        $this->ignored = $ignored;
+
+        return $this;
+    }
+
+    /**
+     * Get ignored
+     *
+     * @return boolean
+     */
+    public function getIgnored()
+    {
+        return $this->ignored;
     }
 }

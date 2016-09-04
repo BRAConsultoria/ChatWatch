@@ -1,8 +1,9 @@
 <?php
 namespace Entities;
-/** @Entity 
- * @Table(name="user",indexes={@Index(name="userId", columns={"userId"})})
- */
+/** 
+* @Entity(repositoryClass="Repositories\UserRepository")
+* @Table(name="user",indexes={@Index(name="userId", columns={"userId"})})
+*/
 class User
 {
     /**

@@ -1,6 +1,7 @@
 <?php
 namespace Entities;
-/** @Entity 
+/** 
+* @Entity(repositoryClass="Repositories\MessageRepository")
 * @Table(name="message",indexes={@Index(name="text", columns={"text"})})
 */
 class Message

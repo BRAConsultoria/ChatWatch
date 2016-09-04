@@ -37,6 +37,10 @@ class Controller {
 
             $controllerClass = new $namespace();
 
+            if($action === 'main'){
+                return $controllerClass->setRequestParams($this->getParams())->setController($this)->main();
+            }
+            
             if(\method_exists($controllerClass, $action) === false) {
                 throw new \RuntimeException("Controller Action not found");
             }
@@ -72,7 +76,7 @@ class Controller {
     private function getControllerMethodAnnotationsRoute($controllerNS, $method = 'main') 
     {
         $annotations = [];
-        \preg_match_all('/@[route]{5}(.*?)\n/i', (new \ReflectionClass($controllerNS))->getMethod('setNewUpdates'), $annotations);
+        \preg_match_all('/@[route]{5}(.*?)\n/i', (new \ReflectionClass($controllerNS))->getMethod($method), $annotations);
 
         if(isset($annotations[1][0])){
             return \strtoupper(\preg_replace('/[^a-z]/i', '', $annotations[1][0]));
@@ -93,7 +97,7 @@ class Controller {
         }
 
         $this->setController($controller);
-        $this->setAction($action);
+        $this->setAction($action ?: 'main');
 
         if (\count($exURI) > 2 and ! empty($exURI[2])) {
             $i = 0;
@@ -102,7 +106,14 @@ class Controller {
             $queryString = \array_slice($exURI, 2);
             $params = [];
             while ($offset < \count($queryString)){
-                list($key, $val) = (\array_slice($queryString, $offset, 2));
+                $pair = \array_slice($queryString, $offset, 2);
+                if(\count($pair) === 2){
+                    list($key, $val) = $pair;
+                } else {
+                    $key = $pair[0];
+                    $val = NULL;
+                }
+
                 if(\strlen($key) > 0){
                     $params[$key] = $val;
                 }

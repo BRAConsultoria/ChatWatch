@@ -57,7 +57,8 @@ class TelegramController implements \App\Core\ControllerInterface
             if($this->class->setParams($this->getRequestParams())->setNewUpdates($payload) === true) {
                 return ($this->controller->jsonSucess("Message saved."));
             } else {
-                return ($this->controller->jsonError("Error"));
+                $error = ($this->class->getError() ?: 'Undefined error.');
+                return ($this->controller->jsonError($error));
             }
         } else {
             return ($this->controller->jsonError("401 - Unauthorized"));

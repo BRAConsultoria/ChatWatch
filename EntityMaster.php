@@ -21,7 +21,7 @@ class EntityMaster
     public function __construct() 
     {
         $this->conf = (new Config())->getConf('db');
-        $paths = array(__DIR__ . "/Domain/Entity/");
+        $paths = array(__DIR__ . "/Domain/Entities/", __DIR__ . "/Domain/Repositories/");
         $isDevMode = true;
 
         // the connection configuration

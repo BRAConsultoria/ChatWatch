@@ -21,8 +21,8 @@
         {
             "ChatWatch\\": "",
             "App\\": "src/",
-            "ChatWatch\\Entity\\": "Domain/Entity/",
-            "Entities\\": "Domain/Entity/"
+            "Entities\\": "Domain/Entities/",
+            "Repositories\\": "Domain/Repositories/"
         }
     }
 }

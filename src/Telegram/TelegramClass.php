@@ -7,6 +7,8 @@ class TelegramClass
     private $entityManager;
     private $entityMaster;
     private $params;
+    
+    private $error;
 
     public function __construct()
     {
@@ -19,17 +21,23 @@ class TelegramClass
         $message    = $payload['message'];
         $user       = $message['from'];
         $chat       = $message['chat'];
-
-        $this->entityManager->beginTransaction();
         
-        $chatRepository = $this->getChat($chat);
-        $userRepository = $this->getUser($user);
+        if($this->isChatIgnored($chat['id']) === false) {
 
-        $this->setMessage($message, $chatRepository, $userRepository);
+            $this->entityManager->beginTransaction();
 
-        $this->entityManager->commit();
-        
-        return true;
+            $chatRepository = $this->getChat($chat);
+            $userRepository = $this->getUser($user);
+
+            $this->setMessage($message, $chatRepository, $userRepository);
+
+            $this->entityManager->commit();
+            return true;
+        } else {
+            $this->setError("The chat id '". $chat['id'] ."' is set to ignored.");
+            return false;
+        }
+
     }
     
     /**
@@ -118,5 +126,28 @@ class TelegramClass
         return $this;
     }
 
+    public function getError() 
+    {
+        return $this->error;
+    }
+
+    private function setError($error) 
+    {
+        $this->error = $error;
+        return $this;
+    }
+
+        
+    public function isChatIgnored($chatId) 
+    {
+        $repository     = $this->entityManager->getRepository('\Entities\Chat');
+        $chatRepository = $repository->findBy(['chatId' => $chatId]);
+
+        if(isset($chatRepository[0]) and \get_class($chatRepository[0]) === 'Entities\Chat') {
+            return ($chatRepository[0]->getIgnored() ? true : false);
+        } else {
+            return false;
+        }
+    }
 
 }
