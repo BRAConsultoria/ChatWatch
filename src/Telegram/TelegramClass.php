@@ -46,9 +46,10 @@ class TelegramClass
             return $chatRepository[0];
         } else {
 
+            $title = ($chat['type'] === 'group' ? $chat['title'] : $chat['first_name']);
             $chatInsert = new \Entities\Chat();
             $chatInsert->setChatId($chatId)
-                ->setTitle($chat['first_name'])
+                ->setTitle($title)
                 ->setType($chat['type']);
             $this->entityMaster->persist($chatInsert);
 

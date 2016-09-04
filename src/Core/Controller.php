@@ -1,16 +1,19 @@
 <?php
 
 namespace App\Core;
+use App\Utils\Log;
 
 class Controller {
     
     private $controller;
     private $action;
     private $params = [];
+    
+    private $log;
 
     public function __construct() 
     {
-        
+        $this->log = new Log();
     }
 
     public function run($URI) 
@@ -38,12 +41,26 @@ class Controller {
                 throw new \RuntimeException("Controller Action not found");
             }
 
+            $route = $this->getControllerMethodAnnotationsRoute($namespace, $action);
+            if(\filter_input(\INPUT_SERVER, 'REQUEST_METHOD') != $route){
+                throw new \RuntimeException("Controller Action not found for requested route");
+            }
+
             return $controllerClass->setRequestParams($this->getParams())->setController($this)->{$action}();
         } catch (\RuntimeException $e) {
             return $this->jsonError($e->getMessage());
         } catch (\Exception $e) {
-            print "<pre>".$e->getTraceAsString()."</pre>";
-            return $this->jsonError($e->getMessage());
+            if(\DEBUG_MODE === true){
+                $Error = "<pre>".$e->getTraceAsString()."</pre>";
+            }
+            if(\LOG_FILE === true and $this->log->getLogAvailable() === true){
+                $this->log->logWrite([
+                    'params'    => $this->params,
+                    'msg'       => $e->getMessage(),
+                    'trace'     => $e->getTraceAsString(),
+                ]);
+            }
+            return $this->jsonError($e->getMessage() . $Error);
         }
     }
     
@@ -52,11 +69,29 @@ class Controller {
         return "<h1>HTTP/1.1 200 OK</h1>";
     }
     
+    private function getControllerMethodAnnotationsRoute($controllerNS, $method = 'main') 
+    {
+        $annotations = [];
+        \preg_match_all('/@[route]{5}(.*?)\n/i', (new \ReflectionClass($controllerNS))->getMethod('setNewUpdates'), $annotations);
+
+        if(isset($annotations[1][0])){
+            return \strtoupper(\preg_replace('/[^a-z]/i', '', $annotations[1][0]));
+        } else {
+            throw new \Exception("Missing route annotation for controller method called");
+        }
+    }
+    
     private function setRequestEnvironment($URI)
     {
         $exURI = \explode('/', $URI);
-        list($controller, $action) = $exURI;
-        
+
+        if(\count($exURI) > 1){
+            list($controller, $action) = $exURI;
+        } else {
+            $controller = $exURI[0];
+            $action     = 'main';
+        }
+
         $this->setController($controller);
         $this->setAction($action);
 
@@ -110,7 +145,7 @@ class Controller {
 
     private function setAction($action) 
     {
-        $this->action = (empty($action) ? 'main' : $action);
+        $this->action = $action;
         return $this;
     }
 

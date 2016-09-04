@@ -46,13 +46,14 @@ class TelegramController implements \App\Core\ControllerInterface
         return $this;
     }
 
+    /**
+    * @route("POST")
+    */
     public function setNewUpdates()
     {
         $params = $this->requestParams;
         if(isset($params['btk']) and $params['btk'] === $this->conf['botToken']){
-            $a = '{"update_id":536948559,"message":{"message_id":475,"from":{"id":159867452,"first_name":"Rinzler"},"chat":{"id":159867452,"first_name":"Rinzler","type":"private"},"date":1472859360,"text":"TESTE"}}';
-            //$payload = \json_decode(\file_get_contents('php://input'), true);
-            $payload = \json_decode($a, true);//TEST
+            $payload = \json_decode(\file_get_contents('php://input'), true);
             if($this->class->setParams($this->getRequestParams())->setNewUpdates($payload) === true) {
                 return ($this->controller->jsonSucess("Message saved."));
             } else {

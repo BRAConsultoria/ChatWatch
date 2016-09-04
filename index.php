@@ -5,6 +5,12 @@ require_once __DIR__. '/vendor/autoload.php';
 use App\Core\Controller;
 
 \define('DEFAULT_NAMESPACE', 'App');
+\define('APP_ROOT', __DIR__ . \DIRECTORY_SEPARATOR);
+
+
+\define('DEBUG_MODE', true);
+\define('LOG_FILE', true);
+\define('LOG_FILE_REQUIRED', true);
 
 function sisError($errno, $errstr, $errfile, $errline)
 {
