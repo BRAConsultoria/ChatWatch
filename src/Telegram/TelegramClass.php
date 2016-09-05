@@ -112,7 +112,7 @@ class TelegramClass
             $messageInsert = new \Entities\Message();
             $messageInsert->setMessageId($messageId)
                 ->setDate(new \DateTime(\date('Y-m-d H:i:s', $message['date'])))
-                ->setText($message['text'])
+                ->setText(\utf8_decode($message['text']))
                 ->setChatId($chat)
                 ->setUserId($user);
             $this->entityMaster->persist($messageInsert);

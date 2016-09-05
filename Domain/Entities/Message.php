@@ -2,7 +2,7 @@
 namespace Entities;
 /** 
 * @Entity(repositoryClass="Repositories\MessageRepository")
-* @Table(name="message",indexes={@Index(name="text", columns={"text"})})
+* @Table(name="message",indexes={@Index(columns={"text"}, flags={"fulltext"})})
 */
 class Message
 {
@@ -27,7 +27,7 @@ class Message
     */
     private $userId;
 
-    /** @Column(name="text") */
+    /** @Column(type="text") */
     private $text;
 
     /** @Column(type="datetime", length=10) */
