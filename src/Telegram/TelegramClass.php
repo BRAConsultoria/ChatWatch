@@ -63,7 +63,9 @@ class TelegramClass
             $chatInsert = new \Entities\Chat();
             $chatInsert->setChatId($chatId)
                 ->setTitle($title)
-                ->setType($chat['type']);
+                ->setType($chat['type'])
+                ->setUserName((isset($chat['username']) ? $chat['username'] : NULL))
+                ->setIgnored(false);
             $this->entityMaster->persist($chatInsert);
 
             return $chatInsert;
@@ -86,7 +88,9 @@ class TelegramClass
 
             $userInsert = new \Entities\User();
             $userInsert->setUserId($userId)
-                ->setFirstName($user['first_name']);
+                ->setFirstName($user['first_name'])
+                ->setLastName((isset($user['last_name']) ? $user['last_name'] : NULL))
+                ->setUserName((isset($user['username']) ? $user['username'] : NULL));
             $this->entityMaster->persist($userInsert);
 
             return $userInsert;
