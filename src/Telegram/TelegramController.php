@@ -57,6 +57,7 @@ class TelegramController implements \App\Core\ControllerInterface
             if($this->class->setParams($this->getRequestParams())->setNewUpdates($payload) === true) {
                 return ($this->controller->jsonSucess("Message saved."));
             } else {
+                (new \App\Utils\Log())->logWrite(["payload" => $payload, "error" => $this->class->getError(), "params" => $this->getRequestParams()]);
                 $error = ($this->class->getError() ?: 'Undefined error.');
                 return ($this->controller->jsonError($error));
             }

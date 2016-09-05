@@ -24,7 +24,7 @@ class TelegramClass
 
         if($this->isChatIgnored($chat['id']) === false) {
 
-            if(isset($chat['text']) === false){
+            if(isset($message['text']) === false){
                 $this->setError("Only text messages are awllowed to be stored.");
                 return false;
             }
@@ -59,7 +59,7 @@ class TelegramClass
             return $chatRepository[0];
         } else {
 
-            $title = ($chat['type'] === 'group' ? $chat['title'] : $chat['first_name']);
+            $title = ($chat['type'] === 'private' ? $chat['first_name'] : $chat['title']);
             $chatInsert = new \Entities\Chat();
             $chatInsert->setChatId($chatId)
                 ->setTitle($title)
