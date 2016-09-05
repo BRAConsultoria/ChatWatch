@@ -22,6 +22,9 @@ class Chat
     /** @Column(type="string", length=10) */
     private $type;
 
+    /** @Column(type="string", length=50, nullable=TRUE, options={"default": NULL}) */
+    private $userName;
+
     /** @Column(type="boolean", nullable=TRUE, options={"default": FALSE}) */
     private $ignored;
 
@@ -105,6 +108,30 @@ class Chat
     public function getType()
     {
         return $this->type;
+    }
+    
+    /**
+     * Set userName
+     *
+     * @param string $userName
+     *
+     * @return Chat
+     */
+    public function setUserName($userName)
+    {
+        $this->userName = $userName;
+
+        return $this;
+    }
+
+    /**
+     * Get userName
+     *
+     * @return string
+     */
+    public function getUserName()
+    {
+        return $this->userName;
     }
     
     /**

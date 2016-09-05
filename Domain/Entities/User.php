@@ -18,6 +18,12 @@ class User
     /** @Column(type="string", length=50) */
     private $firstName;
 
+    /** @Column(type="string", length=50, nullable=TRUE, options={"default": NULL}) */
+    private $lastName;
+
+    /** @Column(type="string", length=50, nullable=TRUE, options={"default": NULL}) */
+    private $userName;
+
     /**
      * Get id
      *
@@ -74,5 +80,53 @@ class User
     public function getFirstName()
     {
         return $this->firstName;
+    }
+    
+    /**
+     * Set lastName
+     *
+     * @param string $lastName
+     *
+     * @return User
+     */
+    public function setLastName($lastName)
+    {
+        $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    /**
+     * Get lastName
+     *
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->lastName;
+    }
+
+    /**
+     * Set userName
+     *
+     * @param string $userName
+     *
+     * @return User
+     */
+    public function setUserName($userName)
+    {
+        $this->userName = $userName;
+
+        return $this;
+    }
+
+    /**
+     * Get userName
+     *
+     * @return string
+     */
+    public function getUserName()
+    {
+        return $this->userName;
     }
 }
