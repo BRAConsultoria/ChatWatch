@@ -5,7 +5,9 @@ require_once __DIR__. '/vendor/autoload.php';
 use App\Core\Controller;
 
 \define('DEFAULT_NAMESPACE', 'App');
-\define('APP_ROOT', __DIR__ . \DIRECTORY_SEPARATOR);
+\define('DIR_ROOT', __DIR__ . \DIRECTORY_SEPARATOR);
+\define('STORAGE_ROOT', \DIR_ROOT . \DIRECTORY_SEPARATOR . 'storage' . \DIRECTORY_SEPARATOR);
+\define('APP_ROOT', \DIR_ROOT . \DIRECTORY_SEPARATOR . 'src' . \DIRECTORY_SEPARATOR);
 
 
 \define('DEBUG_MODE', true);
