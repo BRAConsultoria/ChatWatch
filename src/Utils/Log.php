@@ -10,7 +10,7 @@ class Log
     public function __construct($logFile = 'log.txt')
     {
         $this->setLogFile($logFile);
-        $this->setLogPath(\APP_ROOT . '/log/');
+        $this->setLogPath(\DIR_ROOT .'/log/');
         $fileLog = $this->logPath . $this->getLogFile();
 
         if(\defined('LOG_FILE_REQUIRED') and \LOG_FILE_REQUIRED === true) {

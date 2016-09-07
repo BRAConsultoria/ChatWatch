@@ -26,7 +26,7 @@ class TelegramController implements \App\Core\ControllerInterface
     
     public function main()
     {
-        return \json_encode('MAIN');
+        return \json_encode(['sucess' => false, 'message' => "Not implemeted"]);
     }
     
     public function getRequestParams()

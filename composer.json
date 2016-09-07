@@ -5,7 +5,8 @@
     "require": {
         "propel/propel": "~2.0@dev",
         "doctrine/orm": "^2.5",
-        "symfony/console": "*"
+        "symfony/console": "*",
+        "guzzlehttp/guzzle": "^6.1"
     },
     "license": "GPL",
     "authors": [

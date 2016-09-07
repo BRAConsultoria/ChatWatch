@@ -10,7 +10,7 @@ class Message
      * @Id @Column(type="integer")
      * @GeneratedValue
      */
-    private $id;    
+    private $id;
 
     /** @Column(name="messageId", type="string", length=50) */
     private $messageId;
@@ -33,6 +33,12 @@ class Message
     /** @Column(type="datetime", length=10) */
     private $date;
 
+    /** @Column(type="boolean", nullable=TRUE, options={"default": 0}) */
+    private $pinned;
+
+    /** @Column(type="boolean", nullable=TRUE, options={"default": 0}) */
+    private $file;
+
     /**
      * Get id
      *
@@ -46,7 +52,7 @@ class Message
     /**
      * Set messageId
      *
-     * @param integer $messageId
+     * @param string $messageId
      *
      * @return Message
      */
@@ -60,7 +66,7 @@ class Message
     /**
      * Get messageId
      *
-     * @return integer
+     * @return string
      */
     public function getMessageId()
     {
@@ -116,9 +122,57 @@ class Message
     }
 
     /**
+     * Set pinned
+     *
+     * @param boolean $pinned
+     *
+     * @return Message
+     */
+    public function setPinned($pinned)
+    {
+        $this->pinned = $pinned;
+
+        return $this;
+    }
+
+    /**
+     * Get pinned
+     *
+     * @return boolean
+     */
+    public function getPinned()
+    {
+        return $this->pinned;
+    }
+
+    /**
+     * Set file
+     *
+     * @param boolean $file
+     *
+     * @return Message
+     */
+    public function setFile($file)
+    {
+        $this->file = $file;
+
+        return $this;
+    }
+
+    /**
+     * Get file
+     *
+     * @return boolean
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
      * Set chatId
      *
-     * @param \Chat $chatId
+     * @param \Entities\Chat $chatId
      *
      * @return Message
      */
@@ -132,7 +186,7 @@ class Message
     /**
      * Get chatId
      *
-     * @return \Chat
+     * @return \Entities\Chat
      */
     public function getChatId()
     {
@@ -142,7 +196,7 @@ class Message
     /**
      * Set userId
      *
-     * @param \User $userId
+     * @param \Entities\User $userId
      *
      * @return Message
      */
@@ -156,7 +210,7 @@ class Message
     /**
      * Get userId
      *
-     * @return \User
+     * @return \Entities\User
      */
     public function getUserId()
     {
