@@ -25,50 +25,84 @@ class TelegramClass
     */    
     public function setNewUpdates(array $payload)
     {
-        $file       = false;
-
         $message    = $payload['message'];
-        $user       = $message['from'];
-        $chat       = $message['chat'];
+        
+        if($this->isChatIgnored($message['chat']['id']) === false) {
 
-        if($this->isChatIgnored($chat['id']) === false) {
+            $type = $this->getMessageType($message);
 
-            if(isset($message['text']) === false){
-                $fileStored = $this->fileStorage->getFiles($payload['message']);
+            if(\in_array($type, ['photo', 'video', 'audio', 'voice', 'document'])){
+                $fileStored = $this->fileStorage->getFiles($payload['message'], $type);
                 if($fileStored === false){
                     $this->setError($this->fileStorage->getError());
                     return false;
                 } else {
-                    $file = true;
+                    return $this->updateMessage($message, $fileStored);
                 }
-            }
-
-            $this->entityManager->beginTransaction();
-
-            $chatRepository = $this->getChat($chat);
-            $userRepository = $this->getUser($user);
-
-            if($file === true){
-                $message['text'] = 'file upload';
-                $message['file'] = true;
-            }
-
-            $message = $this->setMessage($message, $chatRepository, $userRepository);
-            if($message === false){
+            } elseif($type === 'pinned_message'){
+                return $this->pinnedMessage($message);
+            } elseif ($type === 'text') {
+                return $this->updateMessage($message);
+            } else {
+                $this->setError('Unknow message type');
                 return false;
             }
-
-            if($file === true){
-                $this->getFile($fileStored, $message);
-            }
-
-            $this->entityManager->commit();
-            return true;
         } else {
-            $this->setError("The chat id '". $chat['id'] ."' is set to ignored.");
+            $this->setError("The chat id '". $message['chat']['id'] ."' is set to ignored.");
+            return false;
+        }
+    }
+    
+    /**
+    * @param array $message Message info
+    * @param array $fileStored File stored info
+    * @return bool
+    */
+    private function updateMessage(array $message, array $fileStored = []) 
+    {
+        $user       = $message['from'];
+        $chat       = $message['chat'];
+
+        $this->entityManager->beginTransaction();
+
+        $chatRepository = $this->getChat($chat);
+        $userRepository = $this->getUser($user);
+        $fileRepository = NULL;
+
+        if(\count($fileStored)) {
+            $message['text'] = 'file upload';
+            $message['file'] = true;
+            $fileRepository = $this->getFile($fileStored);
+        }
+
+        $message = $this->setMessage($message, $chatRepository, $userRepository, $fileRepository);
+
+        if($message === false){
+            $this->entityManager->rollback();
             return false;
         }
 
+        $this->entityManager->commit();
+        return true;
+    }
+
+    /**
+    * @param array $message Message info
+    * @return bool
+    */
+    private function pinnedMessage(array $message)
+    {
+        $messageId          = $message['pinned_message']['message_id'];
+        $repository         = $this->entityManager->getRepository('\Entities\Message');
+        $messageRepository  = $repository->findBy(['messageId' => $messageId]);
+
+        if(isset($messageRepository[0]) and \get_class($messageRepository[0]) === 'Entities\Message') {
+            $this->entityMaster->persist($messageRepository[0]->setPinned(true));
+            return true;
+        } else {
+            $this->setError("Pinned message not stored yet.");
+            return false;
+        }
     }
 
     /**
@@ -129,7 +163,7 @@ class TelegramClass
     * @param \Entities\User $user Entity Object
     * @return bool
     */
-    public function setMessage(array $message, \Entities\Chat $chat, \Entities\User $user)
+    public function setMessage(array $message, \Entities\Chat $chat, \Entities\User $user, $fileRepository = NULL)
     {
         $messageId          = $message['message_id'];
         $repository         = $this->entityManager->getRepository('\Entities\Message');
@@ -145,8 +179,12 @@ class TelegramClass
                 ->setDate(new \DateTime(\date('Y-m-d H:i:s', $message['date'])))
                 ->setText(\utf8_decode($message['text']))
                 ->setChatId($chat)
-                ->setUserId($user)
-                ->setFile(isset($message['file']));
+                ->setUserId($user);
+
+            if(\get_class($fileRepository) === 'Entities\File') {
+                $messageInsert->setFileId($fileRepository);
+            }
+
             $this->entityMaster->persist($messageInsert);
             return $messageInsert;
         }
@@ -156,7 +194,7 @@ class TelegramClass
     * @param array $file File info
     * @return Entities\File File Entity
     */
-    public function getFile(array $file, \Entities\Message $message)
+    public function getFile(array $file)
     {
         $fileId         = $file['id'];
         $repository     = $this->entityManager->getRepository('\Entities\File');
@@ -172,14 +210,28 @@ class TelegramClass
                 ->setFileName($file['name'])
                 ->setTelegramType($file['type'])
                 ->setfileType($file['mime-type'])
-                ->setMd5($file['md5'])
-                ->setMessageId($message);
+                ->setMd5($file['md5']);
             $this->entityMaster->persist($fileInsert);
 
             return $fileInsert;
         }
     }
 
+    /**
+    * @param array $message Message info
+    * @return bool|string
+    */
+    private function getMessageType(array $message) 
+    {
+        $fileKeys = ['pinned_message','text', 'photo', 'video', 'audio', 'voice', 'document'];
+        foreach($fileKeys as $key){
+            if(isset($message[$key])){
+                return $key;
+            }
+        }
+        return false;
+    }
+    
     public function isChatIgnored($chatId) 
     {
         $repository     = $this->entityManager->getRepository('\Entities\Chat');

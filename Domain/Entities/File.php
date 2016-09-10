@@ -2,7 +2,7 @@
 namespace Entities;
 /** 
 * @Entity(repositoryClass="Repositories\FileRepository")
-* @Table(name="file",indexes={@Index(name="fileName", columns={"fileName"})})
+* @Table(name="file",indexes={@Index(name="fileId", columns={"fileId"})})
 */
 class File
 {
@@ -14,12 +14,6 @@ class File
 
     /** @Column(name="fileId", type="string", length=255) */
     private $fileId;
-
-    /**
-    * @ManyToOne(targetEntity="Message", inversedBy="messageId")
-    * @JoinColumn(name="messageId", referencedColumnName="id")
-    */
-    private $messageId;
 
     /** @Column(type="string", length=100) */
     private $telegramType;
@@ -162,29 +156,5 @@ class File
     public function getMd5()
     {
         return $this->md5;
-    }
-
-    /**
-     * Set messageId
-     *
-     * @param \Entities\Message $messageId
-     *
-     * @return File
-     */
-    public function setMessageId(\Entities\Message $messageId = null)
-    {
-        $this->messageId = $messageId;
-
-        return $this;
-    }
-
-    /**
-     * Get messageId
-     *
-     * @return \Entities\Message
-     */
-    public function getMessageId()
-    {
-        return $this->messageId;
     }
 }

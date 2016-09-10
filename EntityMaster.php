@@ -39,7 +39,7 @@ class EntityMaster
     public function persist($entity) 
     {
         $this->entityManager->persist($entity);
-        $this->entityManager->flush();
+        $this->entityManager->flush($entity);
         return true;
     }
 

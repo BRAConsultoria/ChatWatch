@@ -27,6 +27,12 @@ class Message
     */
     private $userId;
 
+    /**
+    * @ManyToOne(targetEntity="File", inversedBy="fileId")
+    * @JoinColumn(name="fileId", referencedColumnName="id", nullable=true)
+    */
+    private $fileId;
+
     /** @Column(type="text") */
     private $text;
 
@@ -36,8 +42,6 @@ class Message
     /** @Column(type="boolean", nullable=TRUE, options={"default": 0}) */
     private $pinned;
 
-    /** @Column(type="boolean", nullable=TRUE, options={"default": 0}) */
-    private $file;
 
     /**
      * Get id
@@ -146,30 +150,6 @@ class Message
     }
 
     /**
-     * Set file
-     *
-     * @param boolean $file
-     *
-     * @return Message
-     */
-    public function setFile($file)
-    {
-        $this->file = $file;
-
-        return $this;
-    }
-
-    /**
-     * Get file
-     *
-     * @return boolean
-     */
-    public function getFile()
-    {
-        return $this->file;
-    }
-
-    /**
      * Set chatId
      *
      * @param \Entities\Chat $chatId
@@ -215,5 +195,29 @@ class Message
     public function getUserId()
     {
         return $this->userId;
+    }
+
+    /**
+     * Set fileId
+     *
+     * @param \Entities\File $fileId
+     *
+     * @return Message
+     */
+    public function setFileId(\Entities\File $fileId = null)
+    {
+        $this->fileId = $fileId;
+
+        return $this;
+    }
+
+    /**
+     * Get fileId
+     *
+     * @return \Entities\File
+     */
+    public function getFileId()
+    {
+        return $this->fileId;
     }
 }
