@@ -5,7 +5,7 @@ use ChatWatch\Config;
 class FileStorage
 {
     private $conf;
-    
+
     private $error;
 
     /** @var string API URL wheter http://wapi.phphive.info/api/message/send.php to send or http://wapi.phphive.info/api/message/receive.php to read messages*/
@@ -37,19 +37,11 @@ class FileStorage
     {
         $this->conf = (new Config())->getConf('telegram');        
     }
-    
-    public function getFiles(array $message)
-    {
-        $fileKeys = ['photo', 'video', 'audio', 'voice', 'document'];
 
-        foreach($fileKeys as $key){
-            if(isset($message[$key])){
-                return $this->processFiles($message[$key]);
-            }
-        }
-        
-        $this->setError("File type not allowed.");
-        return false;
+    public function getFiles(array $message, $type)
+    {
+
+        return $this->processFiles($message[$type]);
     }
     
     private function processFiles($files) 
