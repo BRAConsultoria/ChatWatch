@@ -15,6 +15,8 @@ class TelegramController implements \App\Core\ControllerInterface
     private $conf;
     
     protected $requestParams = [];
+    
+    private $payload;
  
     private $class;
 
@@ -45,7 +47,18 @@ class TelegramController implements \App\Core\ControllerInterface
         $this->controller = $controller;
         return $this;
     }
+    
+    public function getPayload() 
+    {
+        return $this->payload;
+    }
 
+    public function setPayload($payload) 
+    {
+        $this->payload = $payload;
+        return $this;
+    }
+    
     /**
     * @route("POST")
     */
