@@ -8,7 +8,8 @@ class Controller {
     private $controller;
     private $action;
     private $params = [];
-    
+    private $payload;
+
     private $log;
 
     public function __construct() 
@@ -50,7 +51,7 @@ class Controller {
                 throw new \RuntimeException("Controller Action not found for requested route");
             }
 
-            return $controllerClass->setRequestParams($this->getParams())->setController($this)->{$action}();
+            return $controllerClass->setRequestParams($this->getParams())->setPayload($this->getPayload())->setController($this)->{$action}();
         } catch (\RuntimeException $e) {
             return $this->jsonError($e->getMessage());
         } catch (\Exception $e) {
@@ -121,7 +122,8 @@ class Controller {
                 $offset += 2;
             }
             $this->setParams($params);
-        }        
+        }
+        $this->setPayload(\file_get_contents('php://input'), true);
     }
 
     public function jsonSucess($message = '')
@@ -134,6 +136,11 @@ class Controller {
         return \json_encode(array('sucess' => 'false', 'message' => $error));
     }
 
+    public function jsonSucessData(array $data)
+    {
+        return \json_encode(array('sucess' => 'true', 'data' => $data));
+    }
+    
     public function getController()
     {
         return $this->controller;
@@ -164,6 +171,17 @@ class Controller {
     private function setParams(array $params) 
     {
         $this->params = $params;
+        return $this;
+    }
+    
+    public function getPayload() 
+    {
+        return $this->payload;
+    }
+
+    public function setPayload($payload) 
+    {
+        $this->payload = $payload;
         return $this;
     }
 }
