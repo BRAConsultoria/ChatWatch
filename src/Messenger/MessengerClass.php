@@ -37,7 +37,7 @@ class MessengerClass
     
     public function sendMessage($payload) 
     {
-        $data = \json_decode($this->trataPayload($payload), true);
+        $data = \json_decode($payload, true);
         //user submited data
         $id         = $data['id'];
         $message    = $data['message'];
