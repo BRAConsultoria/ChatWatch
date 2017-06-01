@@ -3,3 +3,4 @@ composer.lock
 Config.php
 /log/
 /storage/
+/cache/

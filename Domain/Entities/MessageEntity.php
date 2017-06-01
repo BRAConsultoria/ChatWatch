@@ -1,36 +1,40 @@
 <?php
-namespace Entities;
-/** 
-* @Entity(repositoryClass="Repositories\MessageRepository")
-* @Table(name="message",indexes={@Index(columns={"text"}, flags={"fulltext"})})
-*/
-class Message
-{
+
+namespace ChatWatch\Domain\Entities;
+
+/**
+ * @Entity(repositoryClass="Repositories\MessageRepository")
+ * @Table(name="message",indexes={@Index(columns={"text"}, flags={"fulltext"})})
+ */
+class MessageEntity {
+
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
      */
     private $id;
 
-    /** @Column(name="messageId", type="string", length=50) */
+    /** 
+     * @Column(name="messageId", type="string", length=50) 
+     */
     private $messageId;
 
     /**
-    * @ManyToOne(targetEntity="Chat", inversedBy="chatId")
-    * @JoinColumn(name="chatId", referencedColumnName="id")
-    */
+     * @ManyToOne(targetEntity="ChatEntity", inversedBy="chatId")
+     * @JoinColumn(name="chatId", referencedColumnName="id")
+     */
     private $chatId;
 
     /**
-    * @ManyToOne(targetEntity="User", inversedBy="userId")
-    * @JoinColumn(name="userId", referencedColumnName="id")
-    */
+     * @ManyToOne(targetEntity="UserEntity", inversedBy="userId")
+     * @JoinColumn(name="userId", referencedColumnName="id")
+     */
     private $userId;
 
     /**
-    * @ManyToOne(targetEntity="File", inversedBy="fileId")
-    * @JoinColumn(name="fileId", referencedColumnName="id", nullable=true)
-    */
+     * @ManyToOne(targetEntity="FileEntity", inversedBy="fileId")
+     * @JoinColumn(name="fileId", referencedColumnName="id", nullable=true)
+     */
     private $fileId;
 
     /** @Column(type="text") */
@@ -42,14 +46,12 @@ class Message
     /** @Column(type="boolean", nullable=TRUE, options={"default": 0}) */
     private $pinned;
 
-
     /**
      * Get id
      *
      * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -60,8 +62,7 @@ class Message
      *
      * @return Message
      */
-    public function setMessageId($messageId)
-    {
+    public function setMessageId($messageId) {
         $this->messageId = $messageId;
 
         return $this;
@@ -72,8 +73,7 @@ class Message
      *
      * @return string
      */
-    public function getMessageId()
-    {
+    public function getMessageId() {
         return $this->messageId;
     }
 
@@ -84,8 +84,7 @@ class Message
      *
      * @return Message
      */
-    public function setText($text)
-    {
+    public function setText($text) {
         $this->text = $text;
 
         return $this;
@@ -96,8 +95,7 @@ class Message
      *
      * @return string
      */
-    public function getText()
-    {
+    public function getText() {
         return $this->text;
     }
 
@@ -108,8 +106,7 @@ class Message
      *
      * @return Message
      */
-    public function setDate($date)
-    {
+    public function setDate($date) {
         $this->date = $date;
 
         return $this;
@@ -120,8 +117,7 @@ class Message
      *
      * @return \DateTime
      */
-    public function getDate()
-    {
+    public function getDate() {
         return $this->date;
     }
 
@@ -132,8 +128,7 @@ class Message
      *
      * @return Message
      */
-    public function setPinned($pinned)
-    {
+    public function setPinned($pinned) {
         $this->pinned = $pinned;
 
         return $this;
@@ -144,8 +139,7 @@ class Message
      *
      * @return boolean
      */
-    public function getPinned()
-    {
+    public function getPinned() {
         return $this->pinned;
     }
 
@@ -156,8 +150,7 @@ class Message
      *
      * @return Message
      */
-    public function setChatId(\Entities\Chat $chatId = null)
-    {
+    public function setChatId(ChatEntity $chatId = null) {
         $this->chatId = $chatId;
 
         return $this;
@@ -166,22 +159,20 @@ class Message
     /**
      * Get chatId
      *
-     * @return \Entities\Chat
+     * @return ChatEntity
      */
-    public function getChatId()
-    {
+    public function getChatId() {
         return $this->chatId;
     }
 
     /**
      * Set userId
      *
-     * @param \Entities\User $userId
+     * @param UserEntity $userId
      *
      * @return Message
      */
-    public function setUserId(\Entities\User $userId = null)
-    {
+    public function setUserId(UserEntity $userId = null) {
         $this->userId = $userId;
 
         return $this;
@@ -190,22 +181,20 @@ class Message
     /**
      * Get userId
      *
-     * @return \Entities\User
+     * @return UserEntity
      */
-    public function getUserId()
-    {
+    public function getUserId() {
         return $this->userId;
     }
 
     /**
      * Set fileId
      *
-     * @param \Entities\File $fileId
+     * @param FileEntity $fileId
      *
      * @return Message
      */
-    public function setFileId(\Entities\File $fileId = null)
-    {
+    public function setFileId(FileEntity $fileId = null) {
         $this->fileId = $fileId;
 
         return $this;
@@ -214,10 +203,10 @@ class Message
     /**
      * Get fileId
      *
-     * @return \Entities\File
+     * @return FileEntity
      */
-    public function getFileId()
-    {
+    public function getFileId() {
         return $this->fileId;
     }
+
 }

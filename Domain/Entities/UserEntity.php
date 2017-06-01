@@ -1,27 +1,37 @@
 <?php
-namespace Entities;
-/** 
-* @Entity(repositoryClass="Repositories\UserRepository")
-* @Table(name="user",indexes={@Index(name="userId", columns={"userId"})})
-*/
-class User
-{
+
+namespace ChatWatch\Domain\Entities;
+
+/**
+ * @Entity(repositoryClass="Repositories\UserRepository")
+ * @Table(name="user",indexes={@Index(name="userId", columns={"userId"})})
+ */
+class UserEntity {
+
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
      */
     private $id;
 
-    /** @Column(name="userId", type="string", length=50) */
+    /** 
+     * @Column(name="userId", type="string", length=50) 
+     */
     private $userId;
-    
-    /** @Column(type="string", length=50) */
+
+    /** 
+     * @Column(type="string", length=50) 
+     */
     private $firstName;
 
-    /** @Column(type="string", length=50, nullable=TRUE, options={"default": NULL}) */
+    /** 
+     * @Column(type="string", length=50, nullable=TRUE, options={"default": NULL}) 
+     */
     private $lastName;
 
-    /** @Column(type="string", length=50, nullable=TRUE, options={"default": NULL}) */
+    /** 
+     * @Column(type="string", length=50, nullable=TRUE, options={"default": NULL}) 
+     */
     private $userName;
 
     /**
@@ -29,8 +39,7 @@ class User
      *
      * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -41,8 +50,7 @@ class User
      *
      * @return User
      */
-    public function setUserId($userId)
-    {
+    public function setUserId($userId) {
         $this->userId = $userId;
 
         return $this;
@@ -53,8 +61,7 @@ class User
      *
      * @return integer
      */
-    public function getUserId()
-    {
+    public function getUserId() {
         return $this->userId;
     }
 
@@ -65,8 +72,7 @@ class User
      *
      * @return User
      */
-    public function setFirstName($firstName)
-    {
+    public function setFirstName($firstName) {
         $this->firstName = $firstName;
 
         return $this;
@@ -77,11 +83,10 @@ class User
      *
      * @return string
      */
-    public function getFirstName()
-    {
+    public function getFirstName() {
         return $this->firstName;
     }
-    
+
     /**
      * Set lastName
      *
@@ -89,8 +94,7 @@ class User
      *
      * @return User
      */
-    public function setLastName($lastName)
-    {
+    public function setLastName($lastName) {
         $this->lastName = $lastName;
 
         return $this;
@@ -101,8 +105,7 @@ class User
      *
      * @return string
      */
-    public function getLastName()
-    {
+    public function getLastName() {
         return $this->lastName;
     }
 
@@ -113,8 +116,7 @@ class User
      *
      * @return User
      */
-    public function setUserName($userName)
-    {
+    public function setUserName($userName) {
         $this->userName = $userName;
 
         return $this;
@@ -125,8 +127,8 @@ class User
      *
      * @return string
      */
-    public function getUserName()
-    {
+    public function getUserName() {
         return $this->userName;
     }
+
 }

@@ -1,9 +1,7 @@
 <?php
-
 namespace ChatWatch;
-use Doctrine\ORM\Tools\Setup;
+
 use Doctrine\ORM\EntityManager;
-use ChatWatch\Config;
 
 class EntityMaster
 {
@@ -20,20 +18,8 @@ class EntityMaster
 
     public function __construct() 
     {
-        $this->conf = (new Config())->getConf('db');
-        $paths = array(__DIR__ . "/Domain/Entities/", __DIR__ . "/Domain/Repositories/");
-        $isDevMode = true;
-
-        // the connection configuration
-        $dbParams = [
-            'driver'    => $this->conf['driver'],
-            'user'      => $this->conf['user'],
-            'password'  => $this->conf['password'],
-            'dbname'    => $this->conf['dbname'],
-        ];
-
-        $config = Setup::createAnnotationMetadataConfiguration($paths, $isDevMode);
-        $this->setEntityManager(EntityManager::create($dbParams, $config));
+        $app = require './bootstrap.php';
+        $this->setEntityManager($app['orm.em']);
     }
 
     public function persist($entity) 
@@ -51,7 +37,7 @@ class EntityMaster
 
     /**
      * 
-     * @return Doctrine\ORM\EntityManagerInterface
+     * @return EntityManager
      */
     public function getEntityManager()
     {

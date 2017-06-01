@@ -1,31 +1,43 @@
 <?php
-namespace Entities;
-/** 
-* @Entity(repositoryClass="Repositories\ChatRepository")
-* @Table(name="chat",indexes={@Index(name="chatId", columns={"chatId"})})
-*/
-class Chat
-{
+
+namespace ChatWatch\Domain\Entities;
+
+/**
+ * @Entity(repositoryClass="Repositories\ChatRepository")
+ * @Table(name="chat",indexes={@Index(name="chatId", columns={"chatId"})})
+ */
+class ChatEntity {
+
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
      */
     private $id;
 
-    /** @Column(name="chatId", type="string", length=50) */
+    /** 
+     * @Column(name="chatId", type="string", length=50) 
+     */
     private $chatId;
 
-    /** @Column(type="string", length=140) */
-
+    /** 
+     * @Column(type="string", length=140)
+     */
     private $title;
 
-    /** @Column(type="string", length=10) */
+    /** 
+     * @Column(type="string", length=10)
+     * 
+     */
     private $type;
 
-    /** @Column(type="string", length=50, nullable=TRUE, options={"default": NULL}) */
+    /** 
+     * @Column(type="string", length=50, nullable=TRUE, options={"default": NULL}) 
+     */
     private $userName;
 
-    /** @Column(type="boolean", nullable=TRUE, options={"default": FALSE}) */
+    /** 
+     * @Column(type="boolean", nullable=TRUE, options={"default": FALSE}) 
+     */
     private $ignored;
 
     /**
@@ -33,8 +45,7 @@ class Chat
      *
      * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -45,8 +56,7 @@ class Chat
      *
      * @return Chat
      */
-    public function setChatId($chatId)
-    {
+    public function setChatId($chatId) {
         $this->chatId = $chatId;
 
         return $this;
@@ -57,8 +67,7 @@ class Chat
      *
      * @return integer
      */
-    public function getChatId()
-    {
+    public function getChatId() {
         return $this->chatId;
     }
 
@@ -69,8 +78,7 @@ class Chat
      *
      * @return Chat
      */
-    public function setTitle($title)
-    {
+    public function setTitle($title) {
         $this->title = $title;
 
         return $this;
@@ -81,8 +89,7 @@ class Chat
      *
      * @return string
      */
-    public function getTitle()
-    {
+    public function getTitle() {
         return $this->title;
     }
 
@@ -93,8 +100,7 @@ class Chat
      *
      * @return Chat
      */
-    public function setType($type)
-    {
+    public function setType($type) {
         $this->type = $type;
 
         return $this;
@@ -105,11 +111,10 @@ class Chat
      *
      * @return string
      */
-    public function getType()
-    {
+    public function getType() {
         return $this->type;
     }
-    
+
     /**
      * Set userName
      *
@@ -117,8 +122,7 @@ class Chat
      *
      * @return Chat
      */
-    public function setUserName($userName)
-    {
+    public function setUserName($userName) {
         $this->userName = $userName;
 
         return $this;
@@ -129,11 +133,10 @@ class Chat
      *
      * @return string
      */
-    public function getUserName()
-    {
+    public function getUserName() {
         return $this->userName;
     }
-    
+
     /**
      * Set ignored
      *
@@ -141,8 +144,7 @@ class Chat
      *
      * @return Chat
      */
-    public function setIgnored($ignored)
-    {
+    public function setIgnored($ignored) {
         $this->ignored = $ignored;
 
         return $this;
@@ -153,8 +155,8 @@ class Chat
      *
      * @return boolean
      */
-    public function getIgnored()
-    {
+    public function getIgnored() {
         return $this->ignored;
     }
+
 }

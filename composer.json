@@ -3,10 +3,13 @@
     "description": "Stand-alone app that captures and stores messages on a Telegram chat",
     "type": "library",
     "require": {
-        "propel/propel": "~2.0@dev",
-        "doctrine/orm": "^2.5",
+        "doctrine/orm": "*",
         "symfony/console": "*",
-        "guzzlehttp/guzzle": "^6.1"
+        "guzzlehttp/guzzle": "^6.1",
+        "doctrine/dbal": "2.*",
+        "symfony/doctrine-bridge": "2.*",
+        "dflydev/doctrine-orm-service-provider": "^2.0",
+        "silex/silex": "~2.1"
     },
     "license": "GPL",
     "authors": [
@@ -17,7 +20,7 @@
     ],
     "minimum-stability": "beta",
     "autoload": 
-        {
+    {
        "psr-4": 
         {
             "ChatWatch\\": "",

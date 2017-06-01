@@ -33,6 +33,11 @@ class FileStorage
         'application/xml', 'text/xml'
     ];
     
+    private $exts = [
+        'photos' => 'jpg'
+    ];
+
+
     public function __construct() 
     {
         $this->conf = (new Config())->getConf('telegram');        
@@ -65,16 +70,17 @@ class FileStorage
     
     private function manageFile($file, $filePath, $fileId)
     {
+        $exts = $this->exts;
+        $type = \explode('/', $filePath)[0];
         $tmpFileName    = \STORAGE_ROOT ."tmp/" . \uniqid();
         \file_put_contents($tmpFileName, $file);
-        $ext        = \explode('.', $filePath);
+        $ext        = $exts[$type];
         $mimeType   = $this->getFileMimeType($tmpFileName);
 
-        if(\in_array($mimeType, $this->allowedTypes) === true and isset($ext[1])){
+        if(\in_array($mimeType, $this->allowedTypes) === true and isset($ext)){
 
-            $name = \bin2hex(\openssl_random_pseudo_bytes(32)) .'.'. $ext[1];
-            $type = \explode('/', $ext[0])[0];
-
+            $name = \bin2hex(\openssl_random_pseudo_bytes(32)) .'.'. $ext;
+            //INTEGRAÇÃO S3 ENTRA AQUI!
             \copy($tmpFileName, \STORAGE_ROOT . $type . '/'. $name);
             \unlink($tmpFileName);
 
@@ -87,7 +93,8 @@ class FileStorage
             ];
 
         } else {
-            $this->setError("File without any known extension or type not allowed.");
+            exit("> ". $filePath);
+            $this->setError("File($mimeType) without any known extension or type not allowed.");
             return false;
         }
     }
