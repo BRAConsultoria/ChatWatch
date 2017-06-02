@@ -1,6 +1,10 @@
 <?php
 namespace App\Telegram;
 use ChatWatch\EntityMaster;
+use ChatWatch\Domain\Entities\ChatEntity;
+use ChatWatch\Domain\Entities\MessageEntity;
+use ChatWatch\Domain\Entities\UserEntity;
+use ChatWatch\Domain\Entities\FileEntity;
 
 class TelegramClass
 {
@@ -26,13 +30,15 @@ class TelegramClass
     public function setNewUpdates(array $payload)
     {
         $message    = $payload['message'];
-        
+
         if($this->isChatIgnored($message['chat']['id']) === false) {
 
             $type = $this->getMessageType($message);
 
             if(\in_array($type, ['photo', 'video', 'audio', 'voice', 'document'])){
+
                 $fileStored = $this->fileStorage->getFiles($payload['message'], $type);
+
                 if($fileStored === false){
                     $this->setError($this->fileStorage->getError());
                     return false;
@@ -75,9 +81,9 @@ class TelegramClass
             $fileRepository = $this->getFile($fileStored);
         }
 
-        $message = $this->setMessage($message, $chatRepository, $userRepository, $fileRepository);
+        $messageSaved = $this->setMessage($message, $chatRepository, $userRepository, $fileRepository);
 
-        if($message === false){
+        if($messageSaved === false){
             $this->entityManager->rollback();
             return false;
         }
@@ -93,7 +99,7 @@ class TelegramClass
     private function pinnedMessage(array $message)
     {
         $messageId          = $message['pinned_message']['message_id'];
-        $repository         = $this->entityManager->getRepository('\Entities\Message');
+        $repository         = $this->entityManager->getRepository(MessageEntity::class);
         $messageRepository  = $repository->findBy(['messageId' => $messageId]);
 
         if(isset($messageRepository[0]) and \get_class($messageRepository[0]) === 'Entities\Message') {
@@ -112,15 +118,15 @@ class TelegramClass
     public function getChat(array $chat)
     {
         $chatId         = $chat['id'];
-        $repository     = $this->entityManager->getRepository('\Entities\Chat');
+        $repository     = $this->entityManager->getRepository(ChatEntity::class);
         $chatRepository = $repository->findBy(['chatId' => $chatId]);
 
-        if(isset($chatRepository[0]) and \get_class($chatRepository[0]) === 'Entities\Chat') {
+        if(isset($chatRepository[0]) and \get_class($chatRepository[0]) === ChatEntity::class) {
             return $chatRepository[0];
         } else {
 
             $title = ($chat['type'] === 'private' ? $chat['first_name'] : $chat['title']);
-            $chatInsert = new \Entities\Chat();
+            $chatInsert = new ChatEntity();
             $chatInsert->setChatId($chatId)
                 ->setTitle($title)
                 ->setType($chat['type'])
@@ -139,14 +145,14 @@ class TelegramClass
     public function getUser(array $user)
     {
         $userId         = $user['id'];
-        $repository     = $this->entityManager->getRepository('\Entities\User');
+        $repository     = $this->entityManager->getRepository(UserEntity::class);
         $userRepository = $repository->findBy(['userId' => $userId]);
 
-        if(isset($userRepository[0]) and \get_class($userRepository[0]) === 'Entities\User') {
+        if(isset($userRepository[0]) and \get_class($userRepository[0]) === UserEntity::class) {
             return $userRepository[0];
         } else {
 
-            $userInsert = new \Entities\User();
+            $userInsert = new UserEntity();
             $userInsert->setUserId($userId)
                 ->setFirstName($user['first_name'])
                 ->setLastName((isset($user['last_name']) ? $user['last_name'] : NULL))
@@ -163,25 +169,25 @@ class TelegramClass
     * @param \Entities\User $user Entity Object
     * @return bool
     */
-    public function setMessage(array $message, \Entities\Chat $chat, \Entities\User $user, $fileRepository = NULL)
+    public function setMessage(array $message, ChatEntity $chat, UserEntity $user, $fileRepository = NULL)
     {
         $messageId          = $message['message_id'];
-        $repository         = $this->entityManager->getRepository('\Entities\Message');
+        $repository         = $this->entityManager->getRepository(MessageEntity::class);
         $messageRepository  = $repository->findBy(['messageId' => $messageId]);
 
-        if(isset($messageRepository[0]) and \get_class($messageRepository[0]) === 'Entities\Message') {
+        if(isset($messageRepository[0]) and \get_class($messageRepository[0]) === MessageEntity::class) {
             $this->setError("Message aleady stored. message_id: ". $messageId);
             return false;
         } else {
 
-            $messageInsert = new \Entities\Message();
+            $messageInsert = new MessageEntity();
             $messageInsert->setMessageId($messageId)
                 ->setDate(new \DateTime(\date('Y-m-d H:i:s', $message['date'])))
                 ->setText(\utf8_decode($message['text']))
                 ->setChatId($chat)
                 ->setUserId($user);
 
-            if(\get_class($fileRepository) === 'Entities\File') {
+            if(\is_object($fileRepository)) {
                 $messageInsert->setFileId($fileRepository);
             }
 
@@ -197,15 +203,15 @@ class TelegramClass
     public function getFile(array $file)
     {
         $fileId         = $file['id'];
-        $repository     = $this->entityManager->getRepository('\Entities\File');
+        $repository     = $this->entityManager->getRepository(FileEntity::class);
         $fileRepository = $repository->findBy(['fileId' => $fileId]);
 
-        if(isset($fileRepository[0]) and \get_class($fileRepository[0]) === 'Entities\File') {
+        if(isset($fileRepository[0]) and \get_class($fileRepository[0]) === FileEntity::class) {
             $this->setError("File aleady stored. file_id: ". $fileId);
             return false;
         } else {
 
-            $fileInsert = new \Entities\File();
+            $fileInsert = new FileEntity();
             $fileInsert->setFileId($fileId)
                 ->setFileName($file['name'])
                 ->setTelegramType($file['type'])
@@ -234,10 +240,10 @@ class TelegramClass
     
     public function isChatIgnored($chatId) 
     {
-        $repository     = $this->entityManager->getRepository('\Entities\Chat');
+        $repository     = $this->entityManager->getRepository(ChatEntity::class);
         $chatRepository = $repository->findBy(['chatId' => $chatId]);
 
-        if(isset($chatRepository[0]) and \get_class($chatRepository[0]) === 'Entities\Chat') {
+        if(isset($chatRepository[0]) and \get_class($chatRepository[0]) === ChatEntity::class) {
             return ($chatRepository[0]->getIgnored() ? true : false);
         } else {
             return false;

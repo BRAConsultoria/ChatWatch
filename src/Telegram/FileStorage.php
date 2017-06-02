@@ -1,16 +1,37 @@
 <?php
 namespace App\Telegram;
 use ChatWatch\Config;
+use App\Utils\S3;
 
 class FileStorage
 {
+    /**
+     *
+     * @var array
+     */
     private $conf;
 
+    /**
+     *
+     * @var string
+     */
     private $error;
+    
+    /**
+     *
+     * @var S3
+     */
+    private $s3;
 
-    /** @var string API URL wheter http://wapi.phphive.info/api/message/send.php to send or http://wapi.phphive.info/api/message/receive.php to read messages*/
+    /** 
+     * @var string API URL wheter http://wapi.phphive.info/api/message/send.php to send or http://wapi.phphive.info/api/message/receive.php to read messages
+     */
     private $urlAPI   = 'https://api.telegram.org/';
 
+    /**
+     *
+     * @var array
+     */
     public $allowedTypes = [
         //video
         'video/x-flv', 'video/mp4', 'application/x-mpegURL', 'video/MP2T', 'video/3gpp',
@@ -33,9 +54,23 @@ class FileStorage
         'application/xml', 'text/xml'
     ];
     
+    /**
+     *
+     * @var array 
+     */
+    private $exts = [
+        'photos'    => 'jpg',
+        'videos'    => 'mp4',
+        'audio'     => 'ogg',
+        'voice'     => 'ogg',
+        'document'  => 'pdf'
+    ];
+
+
     public function __construct() 
     {
-        $this->conf = (new Config())->getConf('telegram');        
+        $this->conf = (new Config())->getConf('telegram');
+        $this->s3   = (new S3())->setBucket('chat-watch');
     }
 
     public function getFiles(array $message, $type)
@@ -65,17 +100,22 @@ class FileStorage
     
     private function manageFile($file, $filePath, $fileId)
     {
+        $exts           = $this->exts;
+        $type           = \explode('/', $filePath)[0];
         $tmpFileName    = \STORAGE_ROOT ."tmp/" . \uniqid();
+        
         \file_put_contents($tmpFileName, $file);
-        $ext        = \explode('.', $filePath);
+        
+        $ext        = $exts[$type];
         $mimeType   = $this->getFileMimeType($tmpFileName);
 
-        if(\in_array($mimeType, $this->allowedTypes) === true and isset($ext[1])){
+        if(\in_array($mimeType, $this->allowedTypes) === true and isset($ext)){
 
-            $name = \bin2hex(\openssl_random_pseudo_bytes(32)) .'.'. $ext[1];
-            $type = \explode('/', $ext[0])[0];
+            $name   = \bin2hex(\openssl_random_pseudo_bytes(32)) .'.'. $ext;
+            $md5    = \md5_file($tmpFileName);
 
-            \copy($tmpFileName, \STORAGE_ROOT . $type . '/'. $name);
+            $this->s3->putObject($name, \file_get_contents($tmpFileName));
+
             \unlink($tmpFileName);
 
             return [
@@ -83,11 +123,12 @@ class FileStorage
                 'name'      => $name,
                 'type'      => $type,
                 'mime-type' => $mimeType,
-                'md5'       => \md5_file(STORAGE_ROOT . $type . '/'. $name),
+                'md5'       => $md5
             ];
 
         } else {
-            $this->setError("File without any known extension or type not allowed.");
+            exit("> ". $filePath);
+            $this->setError("File($mimeType) without any known extension or type not allowed.");
             return false;
         }
     }

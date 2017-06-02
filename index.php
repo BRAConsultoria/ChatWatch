@@ -42,9 +42,5 @@ function getErrorType($errno)
 
 \set_error_handler(__NAMESPACE__ . "\\sisError", \E_WARNING | \E_NOTICE);
 
-
+\header("Content-type: application/json; charset=utf-8");
 print (new Controller())->run(\filter_input(\INPUT_GET, 'q'));
-
-
-
-

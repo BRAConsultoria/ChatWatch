@@ -1,40 +1,50 @@
 <?php
-namespace Entities;
-/** 
-* @Entity(repositoryClass="Repositories\FileRepository")
-* @Table(name="file",indexes={@Index(name="fileId", columns={"fileId"})})
-*/
-class File
-{
+
+namespace ChatWatch\Domain\Entities;
+
+/**
+ * @Entity(repositoryClass="Repositories\FileRepository")
+ * @Table(name="file",indexes={@Index(name="fileId", columns={"fileId"})})
+ */
+class FileEntity {
+
     /**
      * @Id @Column(type="integer")
      * @GeneratedValue
      */
     private $id;
 
-    /** @Column(name="fileId", type="string", length=255) */
+    /** 
+     * @Column(name="fileId", type="string", length=255) 
+     */
     private $fileId;
 
-    /** @Column(type="string", length=100) */
+    /** 
+     * @Column(type="string", length=100) 
+     */
     private $telegramType;
 
-    /** @Column(type="string", length=100) */
+    /** 
+     * @Column(type="string", length=100) 
+     */
     private $fileType;
 
-    /** @Column(type="string", length=300) */
+    /** 
+     * @Column(type="string", length=300) 
+     */
     private $fileName;
 
-    /** @Column(type="string", length=300) */
+    /** 
+     * @Column(type="string", length=300) 
+     */
     private $md5;
-
 
     /**
      * Get id
      *
      * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -45,8 +55,7 @@ class File
      *
      * @return File
      */
-    public function setFileId($fileId)
-    {
+    public function setFileId($fileId) {
         $this->fileId = $fileId;
 
         return $this;
@@ -57,8 +66,7 @@ class File
      *
      * @return string
      */
-    public function getFileId()
-    {
+    public function getFileId() {
         return $this->fileId;
     }
 
@@ -69,8 +77,7 @@ class File
      *
      * @return File
      */
-    public function setTelegramType($telegramType)
-    {
+    public function setTelegramType($telegramType) {
         $this->telegramType = $telegramType;
 
         return $this;
@@ -81,8 +88,7 @@ class File
      *
      * @return string
      */
-    public function getTelegramType()
-    {
+    public function getTelegramType() {
         return $this->telegramType;
     }
 
@@ -93,8 +99,7 @@ class File
      *
      * @return File
      */
-    public function setFileType($fileType)
-    {
+    public function setFileType($fileType) {
         $this->fileType = $fileType;
 
         return $this;
@@ -105,8 +110,7 @@ class File
      *
      * @return string
      */
-    public function getFileType()
-    {
+    public function getFileType() {
         return $this->fileType;
     }
 
@@ -117,8 +121,7 @@ class File
      *
      * @return File
      */
-    public function setFileName($fileName)
-    {
+    public function setFileName($fileName) {
         $this->fileName = $fileName;
 
         return $this;
@@ -129,8 +132,7 @@ class File
      *
      * @return string
      */
-    public function getFileName()
-    {
+    public function getFileName() {
         return $this->fileName;
     }
 
@@ -141,8 +143,7 @@ class File
      *
      * @return File
      */
-    public function setMd5($md5)
-    {
+    public function setMd5($md5) {
         $this->md5 = $md5;
 
         return $this;
@@ -153,8 +154,8 @@ class File
      *
      * @return string
      */
-    public function getMd5()
-    {
+    public function getMd5() {
         return $this->md5;
     }
+
 }

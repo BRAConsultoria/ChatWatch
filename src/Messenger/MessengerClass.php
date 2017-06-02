@@ -2,6 +2,7 @@
 namespace App\Messenger;
 use ChatWatch\EntityMaster;
 use App\Sender\Telegram;
+use ChatWatch\Domain\Entities\Chat;
 
 class MessengerClass
 {
@@ -22,7 +23,7 @@ class MessengerClass
     
     public function getAvailableChats()
     {
-        $repository     = $this->entityManager->getRepository('\Entities\Chat');
+        $repository     = $this->entityManager->getRepository(Chat::class);
         $chatRepository = $repository->findAll();
         $data           = [];
 
@@ -42,7 +43,7 @@ class MessengerClass
         $id         = $data['id'];
         $message    = $data['message'];
         
-        $chat   = $this->entityManager->getRepository('\Entities\Chat')->find($data['id']);
+        $chat   = $this->entityManager->getRepository(Chat::class)->find($data['id']);
         $chatId = $chat->getChatId();
         if(!empty($chatId)){
             $this->telegram->sendMessage($message, $chatId, 'markdown');
