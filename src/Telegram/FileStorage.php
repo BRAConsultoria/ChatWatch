@@ -100,18 +100,17 @@ class FileStorage
     
     private function manageFile($file, $filePath, $fileId)
     {
-        $exts           = $this->exts;
-        $type           = \explode('/', $filePath)[0];
         $tmpFileName    = \STORAGE_ROOT ."tmp/" . \uniqid();
         
         \file_put_contents($tmpFileName, $file);
         
-        $ext        = $exts[$type];
+        $ext        = \explode('.', $filePath);
         $mimeType   = $this->getFileMimeType($tmpFileName);
 
-        if(\in_array($mimeType, $this->allowedTypes) === true and isset($ext)){
+        if(\in_array($mimeType, $this->allowedTypes) === true and isset($ext[1])){
 
             $name   = \bin2hex(\openssl_random_pseudo_bytes(32)) .'.'. $ext;
+            $type   = \explode('/', $ext[0])[0];
             $md5    = \md5_file($tmpFileName);
 
             $this->s3->putObject($name, \file_get_contents($tmpFileName));
