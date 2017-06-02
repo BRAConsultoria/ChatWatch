@@ -187,7 +187,7 @@ class TelegramClass
                 ->setChatId($chat)
                 ->setUserId($user);
 
-            if(\get_class($fileRepository) === FileEntity::class) {
+            if(\is_object($fileRepository)) {
                 $messageInsert->setFileId($fileRepository);
             }
 

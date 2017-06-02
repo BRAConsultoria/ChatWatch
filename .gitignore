@@ -4,3 +4,4 @@ Config.php
 /log/
 /storage/
 /cache/
+/.DS_Store

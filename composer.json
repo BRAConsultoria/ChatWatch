@@ -9,7 +9,8 @@
         "doctrine/dbal": "2.*",
         "symfony/doctrine-bridge": "2.*",
         "dflydev/doctrine-orm-service-provider": "^2.0",
-        "silex/silex": "~2.1"
+        "silex/silex": "~2.1",
+        "aws/aws-sdk-php": "*"
     },
     "license": "GPL",
     "authors": [
