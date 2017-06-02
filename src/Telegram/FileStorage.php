@@ -109,7 +109,7 @@ class FileStorage
 
         if(\in_array($mimeType, $this->allowedTypes) === true and isset($ext[1])){
 
-            $name   = \bin2hex(\openssl_random_pseudo_bytes(32)) .'.'. $ext;
+            $name   = \bin2hex(\openssl_random_pseudo_bytes(32)) .'.'. $ext[1];
             $type   = \explode('/', $ext[0])[0];
             $md5    = \md5_file($tmpFileName);
 
